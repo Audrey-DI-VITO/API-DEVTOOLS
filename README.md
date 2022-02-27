@@ -13,7 +13,6 @@ Toutes les routes demandées ont été faites.
 ```
 delete : localhost:3000/books/{isbn}
 create : locahost:3000/books
-   body - raw - JSON
 update (patch) : localhost:3000/books/{isbn}
 getAll : localhost:3000/books
 getByIsbn : localhost:3000/books/{isbn}
