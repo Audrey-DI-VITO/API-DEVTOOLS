@@ -1,7 +1,5 @@
 import {createConnection} from "mysql";
 import {Client} from "minio";
-import {createReadStream, stat, readFileSync} from 'fs';
-import {get} from 'https';
 
 export let con = createConnection({
     host: "db",
@@ -72,7 +70,7 @@ export function insert(res, req, book) {
                 'example': 5678
             }
 
-            minioClient.fPutObject("books", book.isbn+".png", "/src/database/"+book.picture, metaData, function (error, etag) {
+            minioClient.fPutObject("books", book.isbn+".png", "/src/pictures/"+book.picture, metaData, function (error, etag) {
                 if(error) {
                     return console.log(error);
                 }
@@ -165,7 +163,7 @@ export function updateByISBN(res, isbn, book) {
             res.send("Le livre que vous souhaitez mettre à jour n'existe pas.");
         } else {
             minioClient.removeObject("books", isbn+".png");
-            minioClient.fPutObject("books", book.isbnNew+".png", "/src/database/"+book.picture, metaData, function (error, etag) {
+            minioClient.fPutObject("books", book.isbnNew+".png", "/src/pictures/"+book.picture, metaData, function (error, etag) {
                 if(error) {
                     return console.log(error);
                 }
