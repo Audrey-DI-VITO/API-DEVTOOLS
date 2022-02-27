@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import {booksController} from "./controllers/booksController.js";
-import {con, minioClient} from "./database/index.js";
+import {con, minioClient, testSelect, createTables} from "./database/index.js";
 
 class Server {
     constructor() {
@@ -21,6 +21,11 @@ class Server {
         con.connect(function (err) {
             if (err) throw err;
             console.log("Connected!");
+
+            if(testSelect() === undefined || testSelect() === null) {
+                createTables();
+            }
+
             minioClient.bucketExists('books', function (err, exists) {
                 if (!exists) {
                     minioClient.makeBucket('books', 'eu-west-1');
