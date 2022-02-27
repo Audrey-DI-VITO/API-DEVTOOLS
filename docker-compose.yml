@@ -1,0 +1,54 @@
+version: "3"
+services:
+  db:
+    build: ./mysqlDocker
+    environment:
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: books
+      MYSQL_ROOT_PASSWORD: root
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_volume:/var/lib/mysql
+    depends_on:
+      - minio
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2022-02-24T22-12-01Z
+    command: server /data/minio --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    expose:
+      - "9000"
+      - "9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+
+  node:
+    build: ./nodeDocker
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+      - minio
+
+  web:
+    build: ./apacheDocker
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    environment:
+      ServerName: test_apache
+    depends_on:
+      - db
+      - node
+
+
+volumes:
+  db_volume:
+  minio_volume:
