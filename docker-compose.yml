@@ -35,20 +35,6 @@ services:
       - db
       - minio
 
-  web:
-    build: ./apacheDocker
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    expose:
-      - "80"
-    environment:
-      ServerName: test_apache
-    depends_on:
-      - db
-      - node
-
-
 volumes:
   db_volume:
   minio_volume:
